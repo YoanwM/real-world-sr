@@ -6,7 +6,7 @@ from model import FilterLow
 import sys
 sys.path.insert(0, './PerceptualSimilarity')
 import PerceptualSimilarity as ps
-
+import lpips
 
 def generator_loss(labels, wasserstein=False, weights=None):
     if not isinstance(labels, list):
@@ -51,7 +51,7 @@ class GeneratorLoss(nn.Module):
         if torch.cuda.is_available():
             self.pixel_loss = self.pixel_loss.cuda()
             self.color_filter = self.color_filter.cuda()
-        self.perceptual_loss = PerceptualLoss(rotations=lpips_rot_flip, flips=lpips_rot_flip)
+        self.perceptual_loss = PerceptualLossVGG16()
         self.use_perceptual_loss = use_perceptual_loss
         self.wasserstein = wgan
         self.w_col = w_col

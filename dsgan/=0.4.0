@@ -1,0 +1,2 @@
+Requirement already satisfied: torch in /home/yoanwm/anaconda3/envs/dsgan/lib/python3.10/site-packages (1.12.1)
+Requirement already satisfied: typing_extensions in /home/yoanwm/anaconda3/envs/dsgan/lib/python3.10/site-packages (from torch) (4.4.0)

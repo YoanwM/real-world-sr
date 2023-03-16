@@ -41,3 +41,19 @@ datasets:
   df2k: '../datasets/DF2K' 
   aim2019: '../datasets/AIM2019'
   dped: '../datasets/DPED'
+
+dataset1:
+  clean:
+      hr:
+        train: '../datas/dataset1/train_hr'
+        valid: '../datas/dataset1/valid_hr'
+      lr:
+        train: '../datas/dataset1/train_lr'
+        valid: '../datas/dataset1/valid_lr'
+
+dataset_irit:
+  clean:
+      hr:
+        train: '../datas/data_irit/train_hr2'
+      lr:
+        train: '../datas/data_irit/train_lr2'

@@ -19,7 +19,7 @@ parser.add_argument('--crop_size', default=512, type=int, help='training images 
 parser.add_argument('--crop_size_val', default=256, type=int, help='validation images crop size')
 parser.add_argument('--batch_size', default=16, type=int, help='batch size used')
 parser.add_argument('--num_workers', default=4, type=int, help='number of workers used')
-parser.add_argument('--num_epochs', default=300, type=int, help='total train epoch number')
+parser.add_argument('--num_epochs', default=1, type=int, help='total train epoch number')
 parser.add_argument('--num_decay_epochs', default=150, type=int, help='number of epochs during which lr is decayed')
 parser.add_argument('--learning_rate', default=0.0002, type=float, help='learning rate')
 parser.add_argument('--adam_beta_1', default=0.5, type=float, help='beta_1 for adam optimizer of gen and disc')
@@ -58,13 +58,13 @@ opt = parser.parse_args()
 
 # fix random seeds
 torch.manual_seed(0)
-if torch.cuda.is_available():
+"""if torch.cuda.is_available():
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-
+"""
 # prepare data and DataLoaders
 with open('paths.yml', 'r') as stream:
-    PATHS = yaml.load(stream)
+    PATHS = yaml.safe_load(stream)
 if opt.dataset == 'aim2019':
     train_set = loader.TrainDataset(PATHS['aim2019'][opt.artifacts]['source'], cropped=True, **vars(opt))
     train_loader = DataLoader(dataset=train_set, num_workers=opt.num_workers, batch_size=opt.batch_size, shuffle=True)
@@ -88,11 +88,11 @@ g_loss_module = loss.GeneratorLoss(**vars(opt))
 # filters are used for generating validation images
 filter_low_module = model.FilterLow(kernel_size=opt.kernel_size, gaussian=opt.gaussian, include_pad=False)
 filter_high_module = model.FilterHigh(kernel_size=opt.kernel_size, gaussian=opt.gaussian, include_pad=False)
-if torch.cuda.is_available():
+"""if torch.cuda.is_available():
     model_g = model_g.cuda()
     model_d = model_d.cuda()
     filter_low_module = filter_low_module.cuda()
-    filter_high_module = filter_high_module.cuda()
+    filter_high_module = filter_high_module.cuda()"""
 
 # define optimizers
 optimizer_g = optim.Adam(model_g.parameters(), lr=opt.learning_rate, betas=[opt.adam_beta_1, 0.999])
@@ -140,9 +140,9 @@ for epoch in range(start_epoch, opt.num_epochs + 1):
 
     for input_img, disc_img in train_bar:
         iteration += 1
-        if torch.cuda.is_available():
+        """if torch.cuda.is_available():
             input_img = input_img.cuda()
-            disc_img = disc_img.cuda()
+            disc_img = disc_img.cuda()"""
 
         # Estimate scores of fake and real images
         fake_img = model_g(input_img)
@@ -217,9 +217,9 @@ for epoch in range(start_epoch, opt.num_epochs + 1):
 
             # validate on each image in the val dataset
             for index, (input_img, disc_img, target_img) in enumerate(val_bar):
-                if torch.cuda.is_available():
+                """if torch.cuda.is_available():
                     input_img = input_img.cuda()
-                    target_img = target_img.cuda()
+                    target_img = target_img.cuda()"""
                 fake_img = torch.clamp(model_g(input_img), min=0, max=1)
 
                 mse = ((fake_img - target_img) ** 2).mean().data
